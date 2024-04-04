@@ -1,0 +1,27 @@
+server:
+  port: 8003
+
+spring:
+  application:
+    name: MESSAGE-SERVICE
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://uat-auth.swifttech.com.np
+  datasource:
+    url: jdbc:postgresql://localhost:5432/message
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+#services:
+#  customer:
+#    url: http://CUSTOMER-SERVICE:8001/api/v2/customer
