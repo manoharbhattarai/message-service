@@ -1,5 +1,6 @@
 package com.swifttech.messageservice.payload.response;
 
+import com.swifttech.messageservice.enums.ChannelMode;
 import com.swifttech.messageservice.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +14,14 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BulkUploadResponse {
+public class MessagesResponse {
 
-    private String messageName;
-    private String channel;
-    private String fileName;
-    private UUID createdBy;
+    private String MessageTitle;
+    private ChannelMode channel;
+    private LocalDateTime scheduledTime;
+    private UUID createdBY;
     private LocalDateTime startDateTime;
     private String category;
     private Status status;
+
 }

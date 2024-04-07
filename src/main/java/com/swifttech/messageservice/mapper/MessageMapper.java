@@ -1,8 +1,8 @@
 package com.swifttech.messageservice.mapper;
 
-import com.swifttech.messageservice.payload.request.MessageRequest;
-import com.swifttech.messageservice.payload.response.AllMessagesResponse;
 import com.swifttech.messageservice.model.Message;
+import com.swifttech.messageservice.payload.request.MessageRequest;
+import com.swifttech.messageservice.payload.response.MessagesResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
@@ -17,5 +17,5 @@ public interface MessageMapper {
 
     MessageRequest toDto(Message message);
 
-    AllMessagesResponse toResponse(Message message);
+    MessagesResponse toResponse(Message message);
 }

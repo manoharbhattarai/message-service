@@ -8,7 +8,7 @@ import com.swifttech.messageservice.payload.request.ComposeMessageRequest;
 import com.swifttech.messageservice.payload.request.CustomerApiRequest;
 import com.swifttech.messageservice.payload.request.MessageRequest;
 import com.swifttech.messageservice.payload.request.PaginationRequest;
-import com.swifttech.messageservice.payload.response.AllMessagesResponse;
+import com.swifttech.messageservice.payload.response.MessagesResponse;
 import com.swifttech.messageservice.repository.MessageRepository;
 import com.swifttech.messageservice.service.MessageService;
 import com.swifttech.messageservice.util.ApiConnector;
@@ -108,7 +108,7 @@ public class MessageServiceImpl implements MessageService {
 
 
     @Override
-    public List<AllMessagesResponse> messageList(PaginationRequest pagination) {
+    public List<MessagesResponse> messageList(PaginationRequest pagination) {
         Pageable pageable = PageRequest.of(pagination.pages(), pagination.size(),
                 Sort.by(Objects.equals(pagination.sortDirection(), "asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
                         pagination.sortBy() == null ? "createdAt" : pagination.sortBy()));
