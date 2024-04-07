@@ -43,6 +43,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.1.0'
 	annotationProcessor 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.quartz-scheduler:quartz:2.3.2'
 }
 
 dependencyManagement {

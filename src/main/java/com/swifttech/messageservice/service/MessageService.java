@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface MessageService {
 
-    void sendScheduleMessage(MessageRequest messageRequest) throws InterruptedException;
-
-   // List<AllMessagesResponse> messageList();
+    void sendScheduleMessage(MessageRequest messageRequest);
 
     List<AllMessagesResponse> messageList(PaginationRequest paginationRequest);
 
-     List<String> readCSVFile(MultipartFile file);
+    List<String> readCSVFile(MultipartFile file);
+
+    void checkScheduledMessages();
 
 
 }

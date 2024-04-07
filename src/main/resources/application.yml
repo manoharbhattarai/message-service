@@ -4,11 +4,6 @@ server:
 spring:
   application:
     name: MESSAGE-SERVICE
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://uat-auth.swifttech.com.np
   datasource:
     url: jdbc:postgresql://localhost:5432/message
     username: postgres
@@ -25,3 +20,21 @@ spring:
 #services:
 #  customer:
 #    url: http://CUSTOMER-SERVICE:8001/api/v2/customer
+
+
+
+#credentialRequest:
+#  username: "RemitTest"
+#  password: "Remit@Test123"
+#  applicationName: "RemitTest"
+#  creationDate: "2024-04-04T00:00:00Z"
+#  organizationCode: "RemitTest"
+#  email: "TEST@1234"
+#
+#
+#httpHeaders:
+#  organisationCode: "RemitTest"
+#  contentType: "application/json"
+#  basicAuth:
+#    username: "RemitTest"
+#    password: "Remit@Test123"

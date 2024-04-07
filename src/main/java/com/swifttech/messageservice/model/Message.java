@@ -1,7 +1,9 @@
+
 package com.swifttech.messageservice.model;
 
 import com.swifttech.messageservice.core.base.entity.BaseAuditEntity;
 import com.swifttech.messageservice.enums.BroadCastMode;
+import com.swifttech.messageservice.enums.Status;
 import com.swifttech.messageservice.payload.request.CustomerApiRequest;
 import com.swifttech.messageservice.payload.request.CustomerSpecificationRequest;
 import com.swifttech.messageservice.payload.request.NotificationDetailsRequest;
@@ -43,6 +45,9 @@ public class Message extends BaseAuditEntity {
 
     @Enumerated(EnumType.STRING)
     private CommunicationMode communicationMode;
+
+    @Enumerated(EnumType.STRING)
+    private Status scheduledStatus;
 
     @Type(value = JsonBinaryType.class)
     @Column(name = "notification_details", columnDefinition = "jsonb")

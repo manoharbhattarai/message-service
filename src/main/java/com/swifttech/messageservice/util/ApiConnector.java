@@ -11,10 +11,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -42,10 +40,11 @@ public class ApiConnector {
 
     }
 
-    public ApiResponse getCountryList(CountryRequest countryRequest) {
+    public ApiResponse getCountryList(CountryApiRequest countryRequest) {
+        log.info("Calling Country list.");
         var apiResponse = webClient.build()
                 .post()
-                .uri("http://")
+                .uri("https://uat-gateway.swifttech.com.np/api/v2/master/country/list")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(countryRequest)
                 .retrieve()
@@ -57,7 +56,7 @@ public class ApiConnector {
 
     }
 
-    public ApiResponse sendSMS(ComposeMessageRequest messageRequest) {
+    public ApiResponse sendMessage(ComposeMessageRequest messageRequest) {
 
         List<SmsDetailsRequest> requests;
           requests=  messageRequest.getMobileNumber().stream().parallel().map(m -> {
@@ -66,7 +65,6 @@ public class ApiConnector {
                     .message(messageRequest.getMessage())
                     .build();
             }).collect(Collectors.toList());
-
 
 //        for (String mobile : messageRequest.getMobileNumber()) {
 //            SmsDetailsRequest smsDetailsRequest = SmsDetailsRequest.builder()
@@ -80,7 +78,7 @@ public class ApiConnector {
                     new CredentialRequest("N",
                             "RemitTest",
                             "Remit@Test123",
-                            "RemitTest", Date.from(Instant.now()), "B1", requests);
+                            "RemitTest", Date.from(Instant.now()), "TEST@1234", requests);
 
 
             HttpHeaders headers = new HttpHeaders();
@@ -88,18 +86,19 @@ public class ApiConnector {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBasicAuth("RemitTest", "Remit@Test123");
 
-            ApiResponse response = webClient.build()
-                    .post()
-                    .uri("https://fastapi.swifttech.com.np:8080/api/Sms/ExecuteSendSms")
-                    .headers(h -> h.addAll(headers))
-                    .bodyValue(credentialRequest)
-                    .retrieve()
-                    .bodyToMono(ApiResponse.class)
-                    .block();
-
-
-            log.info("RESPONSE {}", response);
-            return response;
+//            ApiResponse response = webClient.build()
+//                    .post()
+//                    .uri("https://fastapi.swifttech.com.np:8080/api/Sms/ExecuteSendSms")
+//                    .headers(h -> h.addAll(headers))
+//                    .bodyValue(credentialRequest)
+//                    .retrieve()
+//                    .bodyToMono(ApiResponse.class)
+//                    .block();
+//
+//
+//            log.info("RESPONSE {}", response);
+//            return response;
+            return null;
         } catch (Exception e) {
             log.error("Error sending SMS: {}", e.getMessage(), e);
 

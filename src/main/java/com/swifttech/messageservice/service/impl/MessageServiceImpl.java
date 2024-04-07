@@ -1,28 +1,32 @@
 package com.swifttech.messageservice.service.impl;
 
 import com.swifttech.messageservice.core.model.ApiResponse;
+import com.swifttech.messageservice.enums.Status;
+import com.swifttech.messageservice.mapper.MessageMapper;
+import com.swifttech.messageservice.model.Message;
 import com.swifttech.messageservice.payload.request.ComposeMessageRequest;
 import com.swifttech.messageservice.payload.request.CustomerApiRequest;
 import com.swifttech.messageservice.payload.request.MessageRequest;
 import com.swifttech.messageservice.payload.request.PaginationRequest;
 import com.swifttech.messageservice.payload.response.AllMessagesResponse;
-import com.swifttech.messageservice.mapper.MessageMapper;
-import com.swifttech.messageservice.model.Message;
 import com.swifttech.messageservice.repository.MessageRepository;
 import com.swifttech.messageservice.service.MessageService;
 import com.swifttech.messageservice.util.ApiConnector;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,16 +43,67 @@ public class MessageServiceImpl implements MessageService {
     private final ApiConnector apiConnector;
 
     @Override
-    public void sendScheduleMessage(MessageRequest messageRequest) throws InterruptedException {
-
+    public void sendScheduleMessage(MessageRequest messageRequest) {
 
         List<String> customerIdsList = messageRequest.getCustomerIds().getCustomerIdsList();
         Message message = MessageMapper.INSTANCE.toEntity(messageRequest);
+
+        LocalDateTime scheduledTime = message.getScheduledTime();
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        if (scheduledTime != null && scheduledTime.isAfter(currentTime)) {
+            message.setScheduledStatus(Status.SCHEDULED);
+            messageRepository.save(message);
+        } else {
+            sendInstantMessage(message);
+        }
+
+    }
+
+
+    @Scheduled(cron = "0 * * * * *")
+    @Transactional
+    @Override
+    public void checkScheduledMessages() {
+        List<Message> scheduledMessages = messageRepository.findAllByScheduleIsTrue();
+        LocalDateTime currentTime = LocalDateTime.now();
+        for (Message message : scheduledMessages) {
+            LocalDateTime scheduledTime = message.getScheduledTime();
+            if (scheduledTime != null && scheduledTime.isBefore(currentTime)) {
+                sendScheduledMessage(message);
+            }
+        }
+    }
+
+    private void sendInstantMessage(Message message) {
+        try {
+            sendBulkMessage(message);
+            message.setScheduledStatus(Status.COMPLETED);
+        } catch (Exception e) {
+            message.setScheduledStatus(Status.FAILED);
+            e.printStackTrace();
+        }
         messageRepository.save(message);
+    }
+
+    private void sendScheduledMessage(Message message) {
+        try {
+            sendBulkMessage(message);
+            message.setScheduledStatus(Status.COMPLETED);
+        } catch (Exception e) {
+            message.setScheduledStatus(Status.FAILED);
+            e.printStackTrace();
+        }
+        messageRepository.save(message);
+    }
+
+    private void sendBulkMessage(Message message) {
+
         ComposeMessageRequest composeMessageRequest = new ComposeMessageRequest();
-        composeMessageRequest.setMessage(messageRequest.getMessage());
-        composeMessageRequest.setMobileNumber(customerIdsList);
-        apiConnector.sendSMS(composeMessageRequest);
+        composeMessageRequest.setMessage(message.getMessage());
+        composeMessageRequest.setMobileNumber(message.getCustomerIds().getCustomerIdsList());
+
+        apiConnector.sendMessage(composeMessageRequest);
     }
 
 
@@ -96,7 +151,6 @@ public class MessageServiceImpl implements MessageService {
         if (apiResponse.isSuccess()) {
             responseList.addAll((List<String>) apiResponse.getData());
         }
-
         log.info("Customer list: {}", responseList);
         return responseList;
     }

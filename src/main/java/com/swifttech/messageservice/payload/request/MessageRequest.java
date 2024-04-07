@@ -3,6 +3,7 @@ package com.swifttech.messageservice.payload.request;
 import com.swifttech.messageservice.enums.BroadCastMode;
 import com.swifttech.messageservice.enums.ChannelMode;
 import com.swifttech.messageservice.enums.CommunicationMode;
+import com.swifttech.messageservice.enums.Status;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class MessageRequest {
     private LocalDateTime scheduledTime;
     private ChannelMode channelMode;
     private BroadCastMode broadCastMode;
+    private Status scheduledStatus;
     private CommunicationMode communicationMode;
     private NotificationDetailsRequest notification;
     private CustomerSpecificationRequest customer;
