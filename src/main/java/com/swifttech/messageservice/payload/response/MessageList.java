@@ -2,6 +2,7 @@ package com.swifttech.messageservice.payload.response;
 
 import com.swifttech.messageservice.enums.ChannelMode;
 import com.swifttech.messageservice.enums.Status;
+import com.swifttech.messageservice.payload.request.CustomerSpecificationRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,13 +15,12 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessagesResponse {
+public class MessageList {
 
-    private String MessageTitle;
-    private ChannelMode channel;
-    private UUID createdBY;
-    private LocalDateTime startDateTime;
-    private String category;
-    private Status status;
-
+    UUID id;
+    ChannelMode channel;
+    UUID createdBy;
+    String category;
+    LocalDateTime scheduledTime;
+    Status status;
 }

@@ -1,5 +1,6 @@
 package com.swifttech.messageservice.payload.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ public class NotificationDetailsRequest {
 
     private String redirectTo;
     private String redirectType;
+    @NotNull(message = "Title is required")
     private String title;
 
 

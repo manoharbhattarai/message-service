@@ -1,16 +1,17 @@
 package com.swifttech.messageservice.service.impl;
 
+import com.swifttech.messageservice.core.exception.RemitException;
 import com.swifttech.messageservice.core.model.ApiResponse;
 import com.swifttech.messageservice.enums.Status;
 import com.swifttech.messageservice.mapper.MessageMapper;
 import com.swifttech.messageservice.model.Message;
-import com.swifttech.messageservice.payload.request.ComposeMessageRequest;
-import com.swifttech.messageservice.payload.request.CustomerApiRequest;
-import com.swifttech.messageservice.payload.request.MessageRequest;
-import com.swifttech.messageservice.payload.request.PaginationRequest;
+import com.swifttech.messageservice.payload.request.*;
+import com.swifttech.messageservice.payload.response.DataPaginationResponse;
+import com.swifttech.messageservice.payload.response.MessageList;
 import com.swifttech.messageservice.payload.response.MessagesResponse;
 import com.swifttech.messageservice.repository.MessageRepository;
 import com.swifttech.messageservice.service.MessageService;
+import com.swifttech.messageservice.specification.CustomSpecification;
 import com.swifttech.messageservice.util.ApiConnector;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,10 +29,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Service
@@ -51,7 +50,9 @@ public class MessageServiceImpl implements MessageService {
         LocalDateTime scheduledTime = message.getScheduledTime();
         LocalDateTime currentTime = LocalDateTime.now();
 
-        if (scheduledTime != null && scheduledTime.isAfter(currentTime)) {
+        if (scheduledTime != null && scheduledTime.isBefore(currentTime)) {
+            throw new IllegalArgumentException("Scheduled time should be in the future.You have entered past time");
+        } else if (scheduledTime != null && scheduledTime.isAfter(currentTime)) {
             message.setScheduledStatus(Status.SCHEDULED);
             messageRepository.save(message);
         } else {
@@ -74,6 +75,7 @@ public class MessageServiceImpl implements MessageService {
             }
         }
     }
+
 
     private void sendInstantMessage(Message message) {
         try {
@@ -108,17 +110,46 @@ public class MessageServiceImpl implements MessageService {
 
 
     @Override
-    public List<MessagesResponse> messageList(PaginationRequest pagination) {
-        Pageable pageable = PageRequest.of(pagination.pages(), pagination.size(),
-                Sort.by(Objects.equals(pagination.sortDirection(), "asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
-                        pagination.sortBy() == null ? "createdAt" : pagination.sortBy()));
-
-        Page<Message> messagePage = messageRepository.findAll(pageable);
+    public DataPaginationResponse messageList(MessageSearchFilterPaginationRequest request) {
+        Pageable pageable = PageRequest.of(request.getPageNo(), request.getPageSize(),
+                Sort.by(Objects.equals(request.getDirection(), "asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
+                        request.getSortBy() == null ? "createdAt" : request.getSortBy()));
+        Specification<Message> messageSpecification = CustomSpecification.filterMessage(request);
+        Page<Message> messagePage = messageRepository.findAll(messageSpecification,pageable);
         List<Message> messageList = messagePage.getContent();
+        List<MessageList> messageLists = new ArrayList<>();
+        for (Message message: messageList){
+            String category = message.getCustomer().getPlatform();
+            MessageList messages =  MessageMapper.INSTANCE.toMessageList(message);
+            messages.setCategory(category);
+            messageLists.add(messages);
 
-        return messageList.stream().map(MessageMapper.INSTANCE::toResponse)
-                .toList();
+        }
+        return DataPaginationResponse.builder()
+                .result(messageLists)
+                .totalElementCount(messagePage.getTotalElements())
+                .build();
     }
+
+
+    @Override
+    public Message updateMessage(UUID id, MessageRequest messageRequest) {
+
+        Message messageId = messageRepository.findById(id).orElseThrow(()
+                -> new RuntimeException("Message not found"));
+        if (messageId.getScheduledStatus() == Status.SCHEDULED || messageId.getScheduledStatus() == Status.FAILED){
+            Message messageUpdate = MessageMapper.INSTANCE.toDto(messageRequest, messageId);
+            if (messageId.getScheduledStatus() == Status.FAILED) {
+                messageUpdate.setScheduledStatus(Status.SCHEDULED);
+            }
+            return messageRepository.save(messageUpdate);
+        } else {
+            throw new RuntimeException("Message can only be updated when status is Scheduled or Failed");
+        }
+    }
+
+
+
 
 
     @Override

@@ -14,6 +14,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -33,10 +34,10 @@ public abstract class BaseAuditEntity extends BaseEntity{
 
     @CreatedBy
     @Column(name = "created_by_id", updatable = false)
-    private Long createdBy;
+    private UUID createdBy;
 
     @LastModifiedBy
     @Column(name = "modified_by_id")
-    private Long modifiedBy;
+    private UUID modifiedBy;
 
 }
