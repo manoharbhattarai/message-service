@@ -13,7 +13,7 @@ import lombok.Setter;
 public class MessageSearchFilterPaginationRequest extends  PaginateRequest{
 
     private String searchText;
-    private String channel;
+    private String channelMode;
     private String status;
     private String category;
     private String createdDateFrom;
