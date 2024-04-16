@@ -1,44 +1,44 @@
-package com.swifttech.messageservice.util;
-
-import com.swifttech.messageservice.enums.Status;
-import com.swifttech.messageservice.model.Message;
-import com.swifttech.messageservice.payload.request.ComposeMessageRequest;
-import com.swifttech.messageservice.repository.MessageRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
-@RequiredArgsConstructor
-public class SmsSender {
-
-    private final MessageRepository messageRepository;
-    private final ApiConnector apiConnector;
-    public void sendInstantMessage(Message message) {
-        try {
-            sendBulkMessage(message);
-            message.setScheduledStatus(Status.COMPLETED);
-        } catch (Exception e) {
-            message.setScheduledStatus(Status.FAILED);
-            e.printStackTrace();
-        }
-        messageRepository.save(message);
-    }
-
-    public void sendScheduledMessage(Message message) {
-        try {
-            sendBulkMessage(message);
-            message.setScheduledStatus(Status.COMPLETED);
-        } catch (Exception e) {
-            message.setScheduledStatus(Status.FAILED);
-            e.printStackTrace();
-        }
-        messageRepository.save(message);
-    }
-
-    public void sendBulkMessage(Message message) {
-        ComposeMessageRequest composeMessageRequest = new ComposeMessageRequest();
-        composeMessageRequest.setMessage(message.getMessage());
-        composeMessageRequest.setMobileNumber(message.getCustomerIds().getCustomerIdsList());
-        apiConnector.sendMessage(composeMessageRequest);
-    }
-}
+//package com.swifttech.messageservice.util;
+//
+//import com.swifttech.messageservice.enums.StatusEnum;
+//import com.swifttech.messageservice.entity.MessageEntity;
+//import com.swifttech.messageservice.payload.request.ComposeMessageRequest;
+//import com.swifttech.messageservice.repository.MessageRepository;
+//import lombok.RequiredArgsConstructor;
+//import lombok.extern.slf4j.Slf4j;
+//
+//@Slf4j
+//@RequiredArgsConstructor
+//public class SmsSender {
+//
+//    private final MessageRepository messageRepository;
+//    private final ApiConnector apiConnector;
+//    public void sendInstantMessage(MessageEntity messageEntity) {
+//        try {
+//            sendBulkMessage(messageEntity);
+//            messageEntity.setScheduledStatusEnum(StatusEnum.COMPLETED);
+//        } catch (Exception e) {
+//            messageEntity.setScheduledStatusEnum(StatusEnum.FAILED);
+//            e.printStackTrace();
+//        }
+//        messageRepository.save(messageEntity);
+//    }
+//
+//    public void sendScheduledMessage(MessageEntity messageEntity) {
+//        try {
+//            sendBulkMessage(messageEntity);
+//            messageEntity.setScheduledStatusEnum(StatusEnum.COMPLETED);
+//        } catch (Exception e) {
+//            messageEntity.setScheduledStatusEnum(StatusEnum.FAILED);
+//            e.printStackTrace();
+//        }
+//        messageRepository.save(messageEntity);
+//    }
+//
+//    public void sendBulkMessage(MessageEntity messageEntity) {
+//        ComposeMessageRequest composeMessageRequest = new ComposeMessageRequest();
+//        composeMessageRequest.setMessage(messageEntity.getMessage());
+//        composeMessageRequest.setMobileNumber(messageEntity.getCustomerIds().getCustomerIdsList());
+//        apiConnector.sendMessage(composeMessageRequest);
+//    }
+//}

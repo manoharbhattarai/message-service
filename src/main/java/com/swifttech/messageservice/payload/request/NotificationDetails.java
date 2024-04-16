@@ -10,12 +10,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationDetailsRequest {
+public class NotificationDetails {
 
     private String redirectTo;
     private String redirectType;
     @NotNull(message = "Title is required")
     private String title;
+    private String image;
 
 
 }

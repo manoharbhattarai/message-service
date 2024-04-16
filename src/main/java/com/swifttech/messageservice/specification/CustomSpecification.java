@@ -1,6 +1,6 @@
 package com.swifttech.messageservice.specification;
 
-import com.swifttech.messageservice.model.Message;
+import com.swifttech.messageservice.entity.MessageEntity;
 import com.swifttech.messageservice.payload.request.MessageSearchFilterPaginationRequest;
 import jakarta.persistence.criteria.Predicate;
 import org.apache.commons.lang3.StringUtils;
@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 
 public class CustomSpecification {
 
-    public static Specification<Message> filterMessage(MessageSearchFilterPaginationRequest request) {
-//        request.setSearchText(request.getSearchText().toLowerCase());
+    public static Specification<MessageEntity> filterMessage(MessageSearchFilterPaginationRequest request) {
         return (root, query, criteriaBuilder) -> {
 
             Predicate finalPredicate = criteriaBuilder.conjunction(); //Initial empty predicate

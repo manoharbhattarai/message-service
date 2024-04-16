@@ -5,4 +5,5 @@ import java.util.List;
 public class CountryApiRequest {
 
     List<String> countryList;
+
 }

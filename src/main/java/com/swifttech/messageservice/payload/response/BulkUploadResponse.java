@@ -1,6 +1,6 @@
 package com.swifttech.messageservice.payload.response;
 
-import com.swifttech.messageservice.enums.Status;
+import com.swifttech.messageservice.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,5 +21,5 @@ public class BulkUploadResponse {
     private UUID createdBy;
     private LocalDateTime startDateTime;
     private String category;
-    private Status status;
+    private StatusEnum statusEnum;
 }

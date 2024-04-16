@@ -41,4 +41,11 @@ public class ServiceResponseBuilder {
 
     }
 
+    public static ApiResponse buildResponse(String message){
+        ApiResponse response = new ApiResponse();
+        response.setSuccess(Boolean.FALSE);
+        response.setMessage(message);
+        return response;
+    }
+
 }

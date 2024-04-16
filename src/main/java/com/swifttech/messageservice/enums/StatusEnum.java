@@ -1,6 +1,6 @@
 package com.swifttech.messageservice.enums;
 
-public enum Status {
+public enum StatusEnum {
 
     SCHEDULED,
     COMPLETED,

@@ -40,6 +40,41 @@ public class ApiConnector {
 
     }
 
+    public ApiResponse getAllCustomer(CustomerApiRequest customerApiRequest) {
+        log.info("Calling customer service and get list of all customer.");
+
+        var apiResponse = webClient.build()
+                .post()
+                .uri("https://uat-gateway.swifttech.com.np/api/v2/customer/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(customerApiRequest)
+                .retrieve()
+                .bodyToMono(ApiResponse.class)
+                .block();
+
+        log.info("Customer Response: {}", apiResponse);
+        return apiResponse;
+
+    }
+
+    public ApiResponse getSpecifiedCustomer(SpecifiedCustomerApiRequest specifiedCustomerList) {
+        log.info("Calling customer service and get list of specified customer.");
+
+        var apiResponse = webClient.build()
+                .post()
+                .uri("https://uat-gateway.swifttech.com.np/api/v2/customer/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(specifiedCustomerList)
+                .retrieve()
+                .bodyToMono(ApiResponse.class)
+                .block();
+
+        log.info("Customer Response: {}", apiResponse);
+        return apiResponse;
+
+    }
+
+
     public ApiResponse getCountryList(CountryApiRequest countryRequest) {
         log.info("Calling Country list.");
         var apiResponse = webClient.build()
@@ -59,12 +94,12 @@ public class ApiConnector {
     public ApiResponse sendMessage(ComposeMessageRequest messageRequest) {
 
         List<SmsDetailsRequest> requests;
-          requests=  messageRequest.getMobileNumber().stream().parallel().map(m -> {
-              return SmsDetailsRequest.builder()
+        requests = messageRequest.getMobileNumber().stream().parallel().map(m -> {
+            return SmsDetailsRequest.builder()
                     .receiverNo(BigInteger.valueOf(Long.parseLong(m)))
                     .message(messageRequest.getMessage())
                     .build();
-            }).collect(Collectors.toList());
+        }).collect(Collectors.toList());
 
 //        for (String mobile : messageRequest.getMobileNumber()) {
 //            SmsDetailsRequest smsDetailsRequest = SmsDetailsRequest.builder()
@@ -86,19 +121,21 @@ public class ApiConnector {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBasicAuth("RemitTest", "Remit@Test123");
 
-//            ApiResponse response = webClient.build()
-//                    .post()
-//                    .uri("https://fastapi.swifttech.com.np:8080/api/Sms/ExecuteSendSms")
-//                    .headers(h -> h.addAll(headers))
-//                    .bodyValue(credentialRequest)
-//                    .retrieve()
-//                    .bodyToMono(ApiResponse.class)
-//                    .block();
-//
-//
-//            log.info("RESPONSE {}", response);
-//            return response;
-            return null;
+            ApiResponse response = webClient.build()
+                    .post()
+                    .uri("https://fastapi.swifttech.com.np:8080/api/Sms/ExecuteSendSms")
+                    .headers(h -> h.addAll(headers))
+                    .bodyValue(credentialRequest)
+                    .retrieve()
+                    .bodyToMono(ApiResponse.class)
+                    .block();
+
+
+            log.info("RESPONSE {}", response);
+            return response;
+//            return null;
+
+            //TODO maintain history table with response from third party api
         } catch (Exception e) {
             log.error("Error sending SMS: {}", e.getMessage(), e);
 

@@ -39,14 +39,14 @@ public class MessageController {
 
     @PostMapping("/create")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Operation success",
-            content = @Content(schema = @Schema(implementation = MessageRequest.class))),
+            content = @Content(schema = @Schema(implementation = Response.class))),
             @ApiResponse(responseCode = "404", description = "Operation failed when creating new message")})
     public ResponseEntity<Response> sendMessage(@RequestBody MessageRequest messageRequest) throws IOException, InterruptedException {
 
-        messageService.sendScheduleMessage(messageRequest);
+        messageService.createMessage(messageRequest);
 
         return ResponseEntity.ok(ServiceResponseBuilder.buildSuccessResponse(
-                messageSource.getMessage("message created successfully",
+                messageSource.getMessage("message.message.create.success",
                         null, LocaleContextHolder.getLocale())
         ));
     }
@@ -96,7 +96,7 @@ public class MessageController {
     public ResponseEntity<Response> editMessage(@PathVariable("id") UUID id, @Valid @RequestBody MessageRequest messageRequest) {
         messageService.updateMessage(id, messageRequest);
         return ResponseEntity.ok(ServiceResponseBuilder.buildSuccessResponse(null,
-                messageSource.getMessage("message.update.success",
+                messageSource.getMessage("message.message.update.success",
                         null, LocaleContextHolder.getLocale())));
     }
 

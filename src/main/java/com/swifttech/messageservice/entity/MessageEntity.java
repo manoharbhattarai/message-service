@@ -1,12 +1,12 @@
 
-package com.swifttech.messageservice.model;
+package com.swifttech.messageservice.entity;
 
 import com.swifttech.messageservice.core.base.entity.BaseAuditEntity;
 import com.swifttech.messageservice.enums.BroadCastMode;
-import com.swifttech.messageservice.enums.Status;
+import com.swifttech.messageservice.enums.StatusEnum;
 import com.swifttech.messageservice.payload.request.CustomerApiRequest;
-import com.swifttech.messageservice.payload.request.CustomerSpecificationRequest;
-import com.swifttech.messageservice.payload.request.NotificationDetailsRequest;
+import com.swifttech.messageservice.payload.request.CustomerSpecification;
+import com.swifttech.messageservice.payload.request.NotificationDetails;
 import com.swifttech.messageservice.enums.ChannelMode;
 import com.swifttech.messageservice.enums.CommunicationMode;
 import io.hypersistence.utils.hibernate.type.json.JsonBinaryType;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Message extends BaseAuditEntity {
+public class MessageEntity extends BaseAuditEntity {
 
     @Type(value = JsonBinaryType.class)
     @Column(columnDefinition = "jsonb")
@@ -47,15 +47,18 @@ public class Message extends BaseAuditEntity {
     private CommunicationMode communicationMode;
 
     @Enumerated(EnumType.STRING)
-    private Status scheduledStatus;
+    private StatusEnum scheduledStatusEnum;
 
     @Type(value = JsonBinaryType.class)
     @Column(name = "notification_details", columnDefinition = "jsonb")
-    private NotificationDetailsRequest notification;
+    private NotificationDetails notification;
 
     @Type(value = JsonBinaryType.class)
     @Column(name = "customer_specification", columnDefinition = "jsonb")
-    private CustomerSpecificationRequest customer;
+    private CustomerSpecification customer;
+
+    private Long successCount;
+    private Long failCount;
 
 
 }

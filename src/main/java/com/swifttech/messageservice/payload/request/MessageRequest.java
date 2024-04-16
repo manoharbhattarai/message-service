@@ -3,7 +3,7 @@ package com.swifttech.messageservice.payload.request;
 import com.swifttech.messageservice.enums.BroadCastMode;
 import com.swifttech.messageservice.enums.ChannelMode;
 import com.swifttech.messageservice.enums.CommunicationMode;
-import com.swifttech.messageservice.enums.Status;
+import com.swifttech.messageservice.enums.StatusEnum;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -26,10 +26,10 @@ public class MessageRequest {
     @NotNull(message = "Channel mode is required")
     private ChannelMode channelMode;
     private BroadCastMode broadCastMode;
-    private Status scheduledStatus;
+    private StatusEnum scheduledStatusEnum;
     private CommunicationMode communicationMode;
-    private NotificationDetailsRequest notification;
-    private CustomerSpecificationRequest customer;
+    private NotificationDetails notification;
+    private CustomerSpecification customer;
 
 
 }

@@ -1,8 +1,7 @@
 package com.swifttech.messageservice.payload.response;
 
 import com.swifttech.messageservice.enums.ChannelMode;
-import com.swifttech.messageservice.enums.Status;
-import com.swifttech.messageservice.payload.request.CustomerSpecificationRequest;
+import com.swifttech.messageservice.enums.StatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +21,6 @@ public class MessageList {
     UUID createdBy;
     String category;
     LocalDateTime scheduledTime;
-    Status status;
+    StatusEnum statusEnum;
+
 }

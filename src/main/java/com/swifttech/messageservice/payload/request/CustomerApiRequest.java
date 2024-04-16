@@ -1,9 +1,6 @@
 package com.swifttech.messageservice.payload.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,8 +8,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CustomerApiRequest {
 
-    List<String> customerIdsList;
+    List<String> customerList;
 
 }
